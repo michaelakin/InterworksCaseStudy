@@ -40,9 +40,9 @@ namespace InterworksCaseStudy.Models
         public string ArrDelay { get; set; }
         public string CrsElapsedTime { get; set; }
         public string ActualElapsedTime { get; set; }
-        [FieldConverter(typeof(BoolConverter))]
+        [FieldConverter(typeof(Converters.BoolConverter))]
         public bool Cancelled;
-        [FieldConverter(typeof(BoolConverter))]
+        [FieldConverter(typeof(Converters.BoolConverter))]
         public bool Diverted;
         public string Distance { get; set; }
 
