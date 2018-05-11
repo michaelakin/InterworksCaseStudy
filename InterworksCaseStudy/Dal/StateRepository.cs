@@ -13,7 +13,7 @@ namespace InterworksCaseStudy.Helpers
         private const string state_insert = @"INSERT INTO candidate2485.dim_state (abbrev, name) VALUES (@abbr, @name);";
         private const string state_select = @"SELECT * FROM candidate2485.dim_state WHERE abbrev = @abbr";
 
-        public static void AddState(NpgsqlConnection conn, string stateAbbr, string stateName, string airportName, string city, Dictionary<string, Models.Dim_State> dict)
+        public static void Add(NpgsqlConnection conn, string stateAbbr, string stateName, string airportName, string city, Dictionary<string, Models.Dim_State> dict)
         {
             var tempState = stateAbbr;
             if (tempState == string.Empty)
@@ -25,7 +25,7 @@ namespace InterworksCaseStudy.Helpers
 
             if (tempState != string.Empty 
                 && !dict.ContainsKey(tempState) 
-                && FindState(conn, tempState, dict) == null)
+                && Find(conn, tempState, dict) == null)
             {
                 //if (stateName != string.Empty)
                 //{
@@ -37,7 +37,7 @@ namespace InterworksCaseStudy.Helpers
                     });
 
                     // Find to add to has table.
-                    FindState(conn, tempState, dict);
+                    Find(conn, tempState, dict);
                 //}
                 //else
                 //{
@@ -46,7 +46,7 @@ namespace InterworksCaseStudy.Helpers
             }
         }
 
-        public static Models.Dim_State FindState(NpgsqlConnection conn, string abbrev, Dictionary<string, Models.Dim_State> dict)
+        public static Models.Dim_State Find(NpgsqlConnection conn, string abbrev, Dictionary<string, Models.Dim_State> dict)
         {
             // Try to find in dictionary first
             var hashState = dict.FirstOrDefault(w => w.Key == abbrev);

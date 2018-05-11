@@ -14,6 +14,7 @@ namespace InterworksCaseStudy
         string _flatFileLocation;
         private Dictionary<string, Models.Dim_City> cityDict = new Dictionary<string, Models.Dim_City>();
         private Dictionary<string, Models.Dim_State> stateDict = new Dictionary<string, Models.Dim_State>();
+        private Dictionary<string, Models.Dim_Airport> airportDict = new Dictionary<string, Models.Dim_Airport>();
 
         public Etl(ConnectionStringSettings connectionString, string flatFileLocaiton)
         {
@@ -27,6 +28,7 @@ namespace InterworksCaseStudy
             //Register(new WriteDataToConsole());
             Register(new WriteState(stateDict));
             Register(new WriteCity(cityDict,stateDict));
+            Register(new WriteAirport(airportDict, cityDict, stateDict));
         }
     }
 }

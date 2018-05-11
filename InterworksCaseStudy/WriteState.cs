@@ -31,8 +31,8 @@ namespace InterworksCaseStudy
                 conn.Open();
                 foreach (var row in rows)
                 {
-                    StateRepository.AddState(conn, (string)row["OriginState"], (string)row["OriginStateName"], (string)row["OriginAirportName"], (string)row["OriginCityName"], _stateDict);
-                    StateRepository.AddState(conn, (string)row["DestState"], (string)row["DestStateName"], (string)row["DestAirportName"], (string)row["DestCityName"], _stateDict);
+                    StateRepository.Add(conn, (string)row["OriginState"], (string)row["OriginStateName"], (string)row["OriginAirportName"], (string)row["OriginCityName"], _stateDict);
+                    StateRepository.Add(conn, (string)row["DestState"], (string)row["DestStateName"], (string)row["DestAirportName"], (string)row["DestCityName"], _stateDict);
 
                     yield return row;
                 }

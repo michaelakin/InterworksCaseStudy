@@ -34,8 +34,8 @@ namespace InterworksCaseStudy
                 conn.Open();
                 foreach (var row in rows)
                 {
-                    CityRepository.AddCity(conn, (string)row["OriginCityName"], (string)row["OriginState"], (string)row["OriginAirportName"], _dictCity, _dictState);
-                    CityRepository.AddCity(conn, (string)row["DestCityName"], (string)row["DestState"], (string)row["DestAirportName"], _dictCity, _dictState);
+                    CityRepository.Add(conn, (string)row["OriginCityName"], (string)row["OriginState"], (string)row["OriginAirportName"], _dictCity, _dictState);
+                    CityRepository.Add(conn, (string)row["DestCityName"], (string)row["DestState"], (string)row["DestAirportName"], _dictCity, _dictState);
 
                     yield return row;
                 }

@@ -14,7 +14,7 @@ namespace InterworksCaseStudy.Helpers
         private const string city_insert = @"INSERT INTO candidate2485.dim_city (city, state_id) VALUES (@city, @state_id);";
         private const string city_select = @"SELECT * FROM candidate2485.dim_city WHERE city = @city and state_id = @state_id";
 
-        public static void AddCity(NpgsqlConnection conn, string city, string state, string airportName, Dictionary<string, Models.Dim_City> table, Dictionary<string, Models.Dim_State> stateDict)
+        public static void Add(NpgsqlConnection conn, string city, string state, string airportName, Dictionary<string, Models.Dim_City> table, Dictionary<string, Models.Dim_State> stateDict)
         {
             if (city != string.Empty && !table.ContainsKey(city + state))
             {
@@ -26,12 +26,12 @@ namespace InterworksCaseStudy.Helpers
                         tempState = airportparts[0].Replace(city, "");
                 }
 
-                if (CityRepository.FindCity(conn, city, tempState, table, stateDict) == null)
+                if (CityRepository.Find(conn, city, tempState, table, stateDict) == null)
                 {
-                    var cityState = StateRepository.FindState(conn, tempState, stateDict);
+                    var cityState = StateRepository.Find(conn, tempState, stateDict);
                     if (cityState != null)
                     {
-                        // Write the state to the database.
+                        // Write the city to the database.
                         conn.Execute(city_insert, new
                         {
                             city = city,
@@ -39,7 +39,7 @@ namespace InterworksCaseStudy.Helpers
                         });
 
                         // find to Add to hash table.
-                        CityRepository.FindCity(conn, city, tempState, table, stateDict);
+                        CityRepository.Find(conn, city, tempState, table, stateDict);
                     }
                     else
                     {
@@ -49,20 +49,20 @@ namespace InterworksCaseStudy.Helpers
             }
         }
 
-        public static Models.Dim_City FindCity(NpgsqlConnection conn, string city, string state, Dictionary<string,Models.Dim_City> table, Dictionary<string, Models.Dim_State> stateDict)
+        public static Models.Dim_City Find(NpgsqlConnection conn, string city, string state, Dictionary<string,Models.Dim_City> dictCity, Dictionary<string, Models.Dim_State> stateDict)
         {
-            var cityState = StateRepository.FindState(conn, state, stateDict);
+            var cityState = StateRepository.Find(conn, state, stateDict);
             if (cityState == null) return null;
 
-            var cachedCity = table.FirstOrDefault(w => w.Key == (city + state));
+            var cachedCity = dictCity.FirstOrDefault(w => w.Key == (city + state));
             if (cachedCity.Value != null) return cachedCity.Value;
 
             var result = conn.Query<Models.Dim_City>(city_select,
                 new { city = city, state_id = cityState.state_id });
 
             // add to hash table
-            if (result.Any() && !table.ContainsKey(city + state))
-                table.Add(city + state,result.FirstOrDefault());
+            if (result.Any() && !dictCity.ContainsKey(city + state))
+                dictCity.Add(city + state,result.FirstOrDefault());
 
             return result.FirstOrDefault();
         }

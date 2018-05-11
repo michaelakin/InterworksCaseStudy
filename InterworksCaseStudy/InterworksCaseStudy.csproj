@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Dal\AirportRepository.cs" />
     <Compile Include="Dal\CityRepository.cs" />
     <Compile Include="etl.cs" />
     <Compile Include="FileGetData.cs" />
@@ -111,6 +112,7 @@
     </Compile>
     <Compile Include="WriteDataToConsole.cs" />
     <Compile Include="WriteCity.cs" />
+    <Compile Include="WriteAirport.cs" />
     <Compile Include="WriteState.cs" />
   </ItemGroup>
   <ItemGroup>
