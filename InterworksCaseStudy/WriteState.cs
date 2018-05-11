@@ -10,16 +10,17 @@ using Npgsql;
 using Dapper;
 using System.Data;
 using InterworksCaseStudy.Helpers;
+using System.Collections.Concurrent;
 
 namespace InterworksCaseStudy
 {
     public class WriteState : AbstractOperation
     {
         private readonly string conString = ConfigurationManager.ConnectionStrings["InterworksCaseStudy"].ConnectionString;
-        private Dictionary<string, Models.Dim_State> _stateDict = new Dictionary<string, Models.Dim_State>();
+        private ConcurrentDictionary<string, Models.Dim_State> _stateDict = new ConcurrentDictionary<string, Models.Dim_State>();
 
         private WriteState() { }
-        public WriteState(Dictionary<string, Models.Dim_State> stateDict)
+        public WriteState(ConcurrentDictionary<string, Models.Dim_State> stateDict)
         {
             _stateDict = stateDict;
         }

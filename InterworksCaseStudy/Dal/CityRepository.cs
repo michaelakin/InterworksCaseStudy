@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rhino.Etl.Core;
+using System.Collections.Concurrent;
 
 namespace InterworksCaseStudy.Helpers
 {
@@ -14,7 +15,7 @@ namespace InterworksCaseStudy.Helpers
         private const string city_insert = @"INSERT INTO candidate2485.dim_city (city, state_id) VALUES (@city, @state_id);";
         private const string city_select = @"SELECT * FROM candidate2485.dim_city WHERE city = @city and state_id = @state_id";
 
-        public static void Add(NpgsqlConnection conn, string city, string state, string airportName, Dictionary<string, Models.Dim_City> table, Dictionary<string, Models.Dim_State> stateDict)
+        public static void Add(NpgsqlConnection conn, string city, string state, string airportName, ConcurrentDictionary<string, Models.Dim_City> table, ConcurrentDictionary<string, Models.Dim_State> stateDict)
         {
             if (city != string.Empty && !table.ContainsKey(city + state))
             {
@@ -49,7 +50,7 @@ namespace InterworksCaseStudy.Helpers
             }
         }
 
-        public static Models.Dim_City Find(NpgsqlConnection conn, string city, string state, Dictionary<string,Models.Dim_City> dictCity, Dictionary<string, Models.Dim_State> stateDict)
+        public static Models.Dim_City Find(NpgsqlConnection conn, string city, string state, ConcurrentDictionary<string,Models.Dim_City> dictCity, ConcurrentDictionary<string, Models.Dim_State> stateDict)
         {
             var cityState = StateRepository.Find(conn, state, stateDict);
             if (cityState == null) return null;
@@ -62,7 +63,7 @@ namespace InterworksCaseStudy.Helpers
 
             // add to hash table
             if (result.Any() && !dictCity.ContainsKey(city + state))
-                dictCity.Add(city + state,result.FirstOrDefault());
+                dictCity.TryAdd(city + state,result.FirstOrDefault());
 
             return result.FirstOrDefault();
         }

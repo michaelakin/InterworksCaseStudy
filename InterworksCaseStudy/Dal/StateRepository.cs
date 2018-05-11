@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace InterworksCaseStudy.Helpers
 {
@@ -13,7 +14,7 @@ namespace InterworksCaseStudy.Helpers
         private const string state_insert = @"INSERT INTO candidate2485.dim_state (abbrev, name) VALUES (@abbr, @name);";
         private const string state_select = @"SELECT * FROM candidate2485.dim_state WHERE abbrev = @abbr";
 
-        public static void Add(NpgsqlConnection conn, string stateAbbr, string stateName, string airportName, string city, Dictionary<string, Models.Dim_State> dict)
+        public static void Add(NpgsqlConnection conn, string stateAbbr, string stateName, string airportName, string city, ConcurrentDictionary<string, Models.Dim_State> dict)
         {
             var tempState = stateAbbr;
             if (tempState == string.Empty)
@@ -46,9 +47,9 @@ namespace InterworksCaseStudy.Helpers
             }
         }
 
-        public static Models.Dim_State Find(NpgsqlConnection conn, string abbrev, Dictionary<string, Models.Dim_State> dict)
+        public static Models.Dim_State Find(NpgsqlConnection conn, string abbrev, ConcurrentDictionary<string, Models.Dim_State> dict)
         {
-            // Try to find in dictionary first
+            // Try to find in ConcurrentDictionary first
             var hashState = dict.FirstOrDefault(w => w.Key == abbrev);
             if (hashState.Value != null)
                 return  hashState.Value ;
@@ -57,7 +58,7 @@ namespace InterworksCaseStudy.Helpers
 
             // add to hash table
             if (result.Any())
-                dict.Add(result.First().abbrev, result.First());
+                dict.TryAdd(result.First().abbrev, result.First());
             return result.FirstOrDefault();
         }
     }

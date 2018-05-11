@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rhino.Etl.Core;
+using System.Collections.Concurrent;
 
 namespace InterworksCaseStudy.Helpers
 {
@@ -14,7 +15,7 @@ namespace InterworksCaseStudy.Helpers
         private const string airport_insert = @"INSERT INTO candidate2485.dim_airport (airport_name, city_id) VALUES (@airport_name, @city_id);";
         private const string airport_select = @"SELECT * FROM candidate2485.dim_airport WHERE airport_name = @airport_name";
 
-        public static void Add(NpgsqlConnection conn, string airportName, string city, string state,  Dictionary<string,Models.Dim_Airport> dictAirports, Dictionary<string, Models.Dim_City> dictCity, Dictionary<string, Models.Dim_State> dictState)
+        public static void Add(NpgsqlConnection conn, string airportName, string city, string state,  ConcurrentDictionary<string,Models.Dim_Airport> dictAirports, ConcurrentDictionary<string, Models.Dim_City> dictCity, ConcurrentDictionary<string, Models.Dim_State> dictState)
         {
             // Clean airport name
             string cleanAirport = string.Empty;
@@ -55,7 +56,7 @@ namespace InterworksCaseStudy.Helpers
             }
         }
 
-        public static Models.Dim_Airport Find(NpgsqlConnection conn, string airport, string city, string state, Dictionary<string,Models.Dim_Airport> dictAirport, Dictionary<string,Models.Dim_City> dictCity)
+        public static Models.Dim_Airport Find(NpgsqlConnection conn, string airport, string city, string state, ConcurrentDictionary<string,Models.Dim_Airport> dictAirport, ConcurrentDictionary<string,Models.Dim_City> dictCity)
         {
             var cachedCity = dictCity.FirstOrDefault(w => w.Key == (city + state));
             if (cachedCity.Value == null) return null;
@@ -68,7 +69,7 @@ namespace InterworksCaseStudy.Helpers
 
             // add to hash table
             if (result.Any() && !dictAirport.ContainsKey(airport))
-                dictAirport.Add(airport,result.FirstOrDefault());
+                dictAirport.TryAdd(airport,result.FirstOrDefault());
 
             return result.FirstOrDefault();
         }

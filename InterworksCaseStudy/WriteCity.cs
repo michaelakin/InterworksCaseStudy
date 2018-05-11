@@ -10,17 +10,18 @@ using Npgsql;
 using Dapper;
 using System.Data;
 using InterworksCaseStudy.Helpers;
+using System.Collections.Concurrent;
 
 namespace InterworksCaseStudy
 {
     public class WriteCity : AbstractOperation
     {
         private readonly string conString = ConfigurationManager.ConnectionStrings["InterworksCaseStudy"].ConnectionString;
-        private Dictionary<string, Models.Dim_City> _dictCity ;
-        private Dictionary<string, Models.Dim_State> _dictState ;
+        private ConcurrentDictionary<string, Models.Dim_City> _dictCity ;
+        private ConcurrentDictionary<string, Models.Dim_State> _dictState ;
 
         private WriteCity() { }
-        public WriteCity(Dictionary<string, Models.Dim_City> dictCity, Dictionary<string, Models.Dim_State> dictState)
+        public WriteCity(ConcurrentDictionary<string, Models.Dim_City> dictCity, ConcurrentDictionary<string, Models.Dim_State> dictState)
         {
             _dictCity = dictCity;
             _dictState = dictState;
