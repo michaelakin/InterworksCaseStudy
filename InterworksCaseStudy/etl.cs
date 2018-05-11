@@ -21,7 +21,8 @@ namespace InterworksCaseStudy
         protected override void Initialize()
         {
             Register(new FileGetData(_flatFileLocation));
-            Register(new WriteDataToConsole());
+            //Register(new WriteDataToConsole());
+            Register(new WriteState());
             //Register(new WriteDataToConsole(connection_string));
         }
     }

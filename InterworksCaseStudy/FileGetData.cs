@@ -23,9 +23,12 @@ namespace InterworksCaseStudy
         {
             using (FileEngine file = FluentFile.For<FlatFile>().From(FilePath))
             {
+                int i = 0;
                 foreach (FlatFile fileRow in file)
                 {
                     yield return Row.FromObject(fileRow);
+                    i++;
+                    //if (i == 500) break;
                 }
             }
         }

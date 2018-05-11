@@ -24,7 +24,7 @@ namespace InterworksCaseStudy
             foreach (var row in rows)
             {
                 //if ((bool)row["Diverted"])
-                //    Console.WriteLine($"T {row["TransactionId"]}, Airline:{row["AirlineName"]}, Diverted:{row["Diverted"]}, Date:{row["FlightDate"]} ");
+                    Console.WriteLine($"C: T {row["TransactionId"]}, Airline:{row["AirlineName"]}, Diverted:{row["Diverted"]}, Date:{row["FlightDate"]} ");
                 yield return row;
             }
         }
