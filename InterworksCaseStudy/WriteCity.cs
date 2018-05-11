@@ -13,16 +13,19 @@ using InterworksCaseStudy.Helpers;
 
 namespace InterworksCaseStudy
 {
-    public class WriteState : AbstractOperation
+    public class WriteCity : AbstractOperation
     {
         private readonly string conString = ConfigurationManager.ConnectionStrings["InterworksCaseStudy"].ConnectionString;
-        private Dictionary<string, Models.Dim_State> _stateDict = new Dictionary<string, Models.Dim_State>();
+        private Dictionary<string, Models.Dim_City> _dictCity ;
+        private Dictionary<string, Models.Dim_State> _dictState ;
 
-        private WriteState() { }
-        public WriteState(Dictionary<string, Models.Dim_State> stateDict)
+        private WriteCity() { }
+        public WriteCity(Dictionary<string, Models.Dim_City> dictCity, Dictionary<string, Models.Dim_State> dictState)
         {
-            _stateDict = stateDict;
+            _dictCity = dictCity;
+            _dictState = dictState;
         }
+
 
         public override IEnumerable<Row> Execute(IEnumerable<Row> rows)
         {
@@ -31,14 +34,12 @@ namespace InterworksCaseStudy
                 conn.Open();
                 foreach (var row in rows)
                 {
-                    StateRepository.AddState(conn, (string)row["OriginState"], (string)row["OriginStateName"], (string)row["OriginAirportName"], (string)row["OriginCityName"], _stateDict);
-                    StateRepository.AddState(conn, (string)row["DestState"], (string)row["DestStateName"], (string)row["DestAirportName"], (string)row["DestCityName"], _stateDict);
+                    CityRepository.AddCity(conn, (string)row["OriginCityName"], (string)row["OriginState"], (string)row["OriginAirportName"], _dictCity, _dictState);
+                    CityRepository.AddCity(conn, (string)row["DestCityName"], (string)row["DestState"], (string)row["DestAirportName"], _dictCity, _dictState);
 
                     yield return row;
                 }
             }
         }
-
-
     }
 }

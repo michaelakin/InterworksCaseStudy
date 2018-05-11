@@ -91,9 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Dal\CityRepository.cs" />
     <Compile Include="etl.cs" />
     <Compile Include="FileGetData.cs" />
-    <Compile Include="Dal\StateHelper.cs" />
+    <Compile Include="Dal\StateRepository.cs" />
     <Compile Include="Models\Dim_Airline.cs" />
     <Compile Include="Models\Dim_Airport.cs" />
     <Compile Include="Models\Dim_City.cs" />
@@ -109,6 +110,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="WriteDataToConsole.cs" />
+    <Compile Include="WriteCity.cs" />
     <Compile Include="WriteState.cs" />
   </ItemGroup>
   <ItemGroup>
