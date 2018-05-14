@@ -11,7 +11,8 @@ namespace InterworksCaseStudy.Models
     [IgnoreFirst()]
     public class FlatFile
     {
-        public string TransactionId;
+        [FieldConverter(ConverterKind.Int32)]
+        public int TransactionId;
         [FieldConverter(ConverterKind.Date, "yyyyMMdd")]
         public DateTime FlightDate;
         public string AirlineCode;

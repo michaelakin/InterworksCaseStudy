@@ -41,32 +41,32 @@ fact_flights
 )
 VALUES
 (
-  @transaction_id_value,
-  @flight_date_value,
-  @airline_id_value,
-  @tail_id_value,
-  @flight_num_value,
-  @origin_airport_id_value,
-  @destination_airport_id_value,
-  @crs_dep_time_value,
-  @dep_time_value,
-  @dep_delay_value,
-  @taxi_out_value,
-  @wheels_off_value,
-  @wheels_on_value,
-  @taxi_in_value,
-  @crs_arr_time_value,
-  @arr_time_value,
-  @arr_delay_value,
-  @crs_elapsed_time_value,
-  @actual_elapsed_time_value,
-  @cancelled_value,
-  @diverted_value,
-  @distance_value,
-  @distance_unit_value,
-  @distance_group_value,
-  @long_dep_delay_value,
-  @arr_next_day_value
+  @transaction_id,
+  @flight_date,
+  @airline_id,
+  @tail_id,
+  @flight_num,
+  @origin_airport_id,
+  @destination_airport_id,
+  @crs_dep_time,
+  @dep_time,
+  @dep_delay,
+  @taxi_out,
+  @wheels_off,
+  @wheels_on,
+  @taxi_in,
+  @crs_arr_time,
+  @arr_time,
+  @arr_delay,
+  @crs_elapsed_time,
+  @actual_elapsed_time,
+  @cancelled,
+  @diverted,
+  @distance,
+  @distance_unit,
+  @distance_group,
+  @long_dep_delay,
+  @arr_next_day
 )";
         //private const string fact_select  = @";
 
@@ -81,14 +81,14 @@ VALUES
             string tempDistance = (string)row["Distance"];
             int tempDistanceInt = 0;
             string tempDistanceUnits = string.Empty;
-            string tempDistanceGrup = string.Empty;
+            string tempDistanceGroup = string.Empty;
             var tempDistArray = tempDistance.Split(' ');
             string unit = string.Empty;
             if (tempDistArray.Length == 2)
             {
-                tempDistanceInt = Convert.ToInt32(tempDistance[0]);
-                tempDistanceUnits = tempDistance[1].ToString().Trim();
-                tempDistanceGrup = GetDistanceGroup(tempDistanceInt);
+                tempDistanceInt = Convert.ToInt32(tempDistArray[0]);
+                tempDistanceUnits = tempDistArray[1].ToString().Trim();
+                tempDistanceGroup = GetDistanceGroup(tempDistanceInt);
             }
             else
             {
@@ -105,7 +105,7 @@ VALUES
             conn.Execute(fact_insert, new
             {
                 transaction_id = row["TransactionId"],
-                flight_date = row["TransactionId"],
+                flight_date = row["FlightDate"],
                 airline_id = airline.airline_id,
                 tail_id = tail.tail_id,
                 flight_num = row["FlightNum"],
@@ -125,7 +125,7 @@ VALUES
                 actual_elapsed_time = row["ActualElapsedTime"],
                 cancelled = row["Cancelled"],
                 diverted = row["Diverted"],
-                distance = tempDistance,
+                distance = tempDistanceInt,
                 distance_unit = tempDistanceUnits,
                 distance_group = GetDistanceGroup(tempDistanceInt),
                 long_dep_delay =  ((int)row["DepDelay"] > 15),
