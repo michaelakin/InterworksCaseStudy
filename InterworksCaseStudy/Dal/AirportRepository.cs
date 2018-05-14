@@ -18,10 +18,7 @@ namespace InterworksCaseStudy.Helpers
         public static void Add(NpgsqlConnection conn, string airportName, string city, string state,  ConcurrentDictionary<string,Models.Dim_Airport> dictAirports, ConcurrentDictionary<string, Models.Dim_City> dictCity, ConcurrentDictionary<string, Models.Dim_State> dictState)
         {
             // Clean airport name
-            string cleanAirport = string.Empty;
-            var temp = airportName.Split(':');
-            if (temp.Count() > 1)
-                cleanAirport = temp[1].Trim();
+            string cleanAirport = Clean(airportName);
 
             if (cleanAirport != string.Empty && !dictAirports.ContainsKey(cleanAirport))
             {
@@ -72,6 +69,16 @@ namespace InterworksCaseStudy.Helpers
                 dictAirport.TryAdd(airport,result.FirstOrDefault());
 
             return result.FirstOrDefault();
+        }
+
+        public static string Clean(string input)
+        {
+            string cleanAirport = string.Empty;
+            var temp = input.Split(':');
+            if (temp.Count() > 1)
+                return temp[1].Trim();
+            else
+                return string.Empty;
         }
     }
 }
