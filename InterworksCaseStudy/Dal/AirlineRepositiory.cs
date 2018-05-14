@@ -14,33 +14,29 @@ namespace InterworksCaseStudy.Helpers
         public static void Add(NpgsqlConnection conn, string airline_code, string name, ConcurrentDictionary<string, Models.Dim_Airline> dictAirline)
         {
             // Clean airline name
-            string cleanName = string.Empty;
-            var temp = name.Split(':');
-            if (temp.Count() > 1)
+            var cleanName = Clean(name);
+
+            if (cleanName != string.Empty && !dictAirline.ContainsKey(cleanName))
             {
-                cleanName = temp[0].Trim();
 
-                if (cleanName != string.Empty && !dictAirline.ContainsKey(cleanName))
+                if (AirlineRepository.Find(conn, airline_code, cleanName, dictAirline) == null)
                 {
-
-                    if (AirlineRepository.Find(conn, airline_code, cleanName, dictAirline) == null)
+                    // Write the airline to the database.
+                    conn.Execute(airline_insert, new
                     {
-                        // Write the airline to the database.
-                        conn.Execute(airline_insert, new
-                        {
-                            airline_code = airline_code,
-                            name = cleanName
-                        });
+                        airline_code = airline_code,
+                        name = cleanName
+                    });
 
-                        // find to Add to hash table.
-                        AirlineRepository.Find(conn, airline_code, cleanName, dictAirline);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Could not add airline: {airline_code}");
+                    // find to Add to hash table.
+                    AirlineRepository.Find(conn, airline_code, cleanName, dictAirline);
                 }
             }
+            else
+            {
+                Console.WriteLine($"Could not add airline: {airline_code}");
+            }
+
         }
 
         public static Models.Dim_Airline Find(NpgsqlConnection conn, string airline_code, string name, ConcurrentDictionary<string, Models.Dim_Airline> dictAirline)
@@ -56,6 +52,17 @@ namespace InterworksCaseStudy.Helpers
                 dictAirline.TryAdd(airline_code, result.FirstOrDefault());
 
             return result.FirstOrDefault();
+        }
+
+        public static string Clean(string input)
+        {
+            var temp = input.Split(':');
+            if (temp.Count() > 1)
+            {
+                return temp[0].Trim();
+            }
+            else
+                return string.Empty;
         }
     }
 }
