@@ -1,10 +1,11 @@
-﻿using InterworksCaseStudy.Helpers;
+﻿using InterworksCaseStudy.Dal;
 using Npgsql;
 using Rhino.Etl.Core;
 using Rhino.Etl.Core.Operations;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace InterworksCaseStudy
 {
@@ -30,7 +31,7 @@ namespace InterworksCaseStudy
             _dictCity = dictCity;
             _dictState = dictState;
             _dictTail = dictTail;
-            
+
         }
 
         public override IEnumerable<Row> Execute(IEnumerable<Row> rows)
@@ -38,11 +39,16 @@ namespace InterworksCaseStudy
             using (var conn = new NpgsqlConnection(conString))
             {
                 conn.Open();
+                Parallel.ForEach(rows, (row) =>
+                    {
+                        FactRepository.Add(conn, row, _dictAirline, _dictAirport, _dictCity, _dictState, _dictTail);
+                    });
+
                 foreach (var row in rows)
                 {
-                    FactRepository.Add(conn, row, _dictAirline, _dictAirport, _dictCity, _dictState, _dictTail); 
                     yield return row;
                 }
+
             }
         }
     }

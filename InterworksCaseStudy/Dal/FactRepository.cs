@@ -5,7 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
-namespace InterworksCaseStudy.Helpers
+namespace InterworksCaseStudy.Dal
 {
     public static class FactRepository
     {
@@ -129,7 +129,69 @@ VALUES
                 long_dep_delay = ((int)row["DepDelay"] > 15),
                 arr_next_day = (DateTime.Compare((DateTime)row["ArrTime"], (DateTime)row["DepTime"]) < 0)
             });
+        }
 
+        public static Models.Fact_Flights Map(Row row,
+    ConcurrentDictionary<string, Models.Dim_Airline> dictAirline,
+    ConcurrentDictionary<string, Models.Dim_Airport> dictAirport,
+    ConcurrentDictionary<string, Models.Dim_City> dictCity,
+    ConcurrentDictionary<string, Models.Dim_State> dictState,
+    ConcurrentDictionary<string, Models.Dim_Tail> dictTail)
+        {
+            // Convert Distance.
+            string tempDistance = (string)row["Distance"];
+            int tempDistanceInt = 0;
+            string tempDistanceUnits = string.Empty;
+            string tempDistanceGroup = string.Empty;
+            var tempDistArray = tempDistance.Split(' ');
+            string unit = string.Empty;
+            if (tempDistArray.Length == 2)
+            {
+                tempDistanceInt = Convert.ToInt32(tempDistArray[0]);
+                tempDistanceUnits = tempDistArray[1].ToString().Trim();
+                tempDistanceGroup = GetDistanceGroup(tempDistanceInt);
+            }
+            else
+            {
+                throw new Exception("Invalid disance");
+            }
+
+            // Find codes
+            var airline = dictAirline.Where(w => w.Key == (string)row["AirlineCode"]).FirstOrDefault().Value; ;
+            var tail = dictTail.Where(w => w.Key == TailRepository.CleanTail((string)row["TailNum"])).FirstOrDefault().Value;
+            var origin_airport = dictAirport.Where(w => w.Key == AirportRepository.Clean((string)row["OriginAirportName"])).FirstOrDefault().Value;
+            var dest_airport = dictAirport.Where(w => w.Key == AirportRepository.Clean((string)row["DestAirportName"])).FirstOrDefault().Value;
+
+            // Write the airline to the database.
+            return new Models.Fact_Flights()
+            {
+                transaction_id = (int)row["TransactionId"],
+                flight_date = (DateTime)row["FlightDate"],
+                airline_id = airline.airline_id,
+                tail_id = tail.tail_id,
+                flight_num = (int)row["FlightNum"],
+                origin_airport_id = origin_airport.airport_id,
+                dest_airport_id = dest_airport.airport_id,
+                crs_dep_time = (DateTime) row["CrsDepTime"],
+                dep_time = (DateTime)row["DepTime"],
+                dep_delay = (int)row["DepDelay"],
+                taxi_out = (int)row["TaxiOut"],
+                wheels_off = (DateTime)row["WheelsOff"],
+                wheels_on = (DateTime)row["WheelsOn"],
+                taxi_in = (int)row["TaxiIn"],
+                crs_arr_time = (DateTime)row["CrsArrTime"],
+                arr_time = (DateTime)row["ArrTime"],
+                arr_delay = (int)row["ArrDelay"],
+                crs_elapsed_time = (int)row["CrsElapsedTime"],
+                actual_elapsed_time = (int)row["ActualElapsedTime"],
+                cancelled = (bool)row["Cancelled"],
+                diverted = (bool)row["Diverted"],
+                distance = tempDistanceInt,
+                distance_unit = tempDistanceUnits,
+                distance_group = GetDistanceGroup(tempDistanceInt),
+                long_dep_delay = ((int)row["DepDelay"] > 15),
+                arr_next_day = (DateTime.Compare((DateTime)row["ArrTime"], (DateTime)row["DepTime"]) < 0)
+            };
         }
 
         public static string GetDistanceGroup(int distance)

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
-namespace InterworksCaseStudy.Helpers
+namespace InterworksCaseStudy.Dal
 {
     public static class AirportRepository
     {

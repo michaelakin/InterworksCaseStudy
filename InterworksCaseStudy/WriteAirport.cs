@@ -1,4 +1,4 @@
-﻿using InterworksCaseStudy.Helpers;
+﻿using InterworksCaseStudy.Dal;
 using Npgsql;
 using Rhino.Etl.Core;
 using Rhino.Etl.Core.Operations;
