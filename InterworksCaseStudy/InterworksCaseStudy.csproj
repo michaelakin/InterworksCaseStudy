@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Dal\TailRepository.cs" />
     <Compile Include="Dal\AirlineRepositiory.cs" />
     <Compile Include="Dal\AirportRepository.cs" />
     <Compile Include="Dal\CityRepository.cs" />
@@ -111,6 +112,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="WriteTail.cs" />
     <Compile Include="WriteAirline.cs" />
     <Compile Include="WriteDataToConsole.cs" />
     <Compile Include="WriteCity.cs" />
