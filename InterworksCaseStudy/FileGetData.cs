@@ -1,13 +1,8 @@
-﻿using Rhino.Etl.Core.Operations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InterworksCaseStudy.Models;
-using Rhino.Etl.Core.Files;
+﻿using InterworksCaseStudy.Models;
 using Rhino.Etl.Core;
+using Rhino.Etl.Core.Files;
+using Rhino.Etl.Core.Operations;
+using System.Collections.Generic;
 
 namespace InterworksCaseStudy
 {
@@ -28,7 +23,6 @@ namespace InterworksCaseStudy
                 {
                     yield return Row.FromObject(fileRow);
                     i++;
-                    //if (i == 500) break;
                 }
             }
         }

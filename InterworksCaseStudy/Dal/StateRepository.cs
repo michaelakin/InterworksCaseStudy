@@ -1,11 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace InterworksCaseStudy.Helpers
 {
@@ -24,26 +20,19 @@ namespace InterworksCaseStudy.Helpers
                     tempState = airportparts[0].Replace(city, "");
             }
 
-            if (tempState != string.Empty 
-                && !dict.ContainsKey(tempState) 
+            if (tempState != string.Empty
+                && !dict.ContainsKey(tempState)
                 && Find(conn, tempState, dict) == null)
             {
-                //if (stateName != string.Empty)
-                //{
-                    // Write the state to the database.
-                    conn.Execute(state_insert, new
-                    {
-                        abbr = tempState,
-                        name = stateName
-                    });
+                // Write the state to the database.
+                conn.Execute(state_insert, new
+                {
+                    abbr = tempState,
+                    name = stateName
+                });
 
-                    // Find to add to has table.
-                    Find(conn, tempState, dict);
-                //}
-                //else
-                //{
-                //    Console.WriteLine($"Invalid State Data: Abbrev: {tempState}, Name: {stateName}");
-                //}
+                // Find to add to has table.
+                Find(conn, tempState, dict);
             }
         }
 
@@ -52,8 +41,8 @@ namespace InterworksCaseStudy.Helpers
             // Try to find in ConcurrentDictionary first
             var hashState = dict.FirstOrDefault(w => w.Key == abbrev);
             if (hashState.Value != null)
-                return  hashState.Value ;
-            
+                return hashState.Value;
+
             var result = conn.Query<Models.Dim_State>(state_select, new { abbr = abbrev });
 
             // add to hash table

@@ -1,16 +1,10 @@
-﻿using Rhino.Etl.Core;
-using Rhino.Etl.Core.Operations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Configuration;
+﻿using InterworksCaseStudy.Helpers;
 using Npgsql;
-using Dapper;
-using System.Data;
-using InterworksCaseStudy.Helpers;
+using Rhino.Etl.Core;
+using Rhino.Etl.Core.Operations;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace InterworksCaseStudy
 {
@@ -51,7 +45,5 @@ namespace InterworksCaseStudy
                 }
             }
         }
-
-
     }
 }

@@ -1,9 +1,5 @@
 ﻿using FileHelpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InterworksCaseStudy.Models
 {
@@ -30,7 +26,6 @@ namespace InterworksCaseStudy.Models
         public string DestCityName;
         public string DestState;
         public string DestStateName;
-
         [FieldConverter(typeof(Converters.TimeConverter))]
         public DateTime CrsDepTime;
         [FieldConverter(typeof(Converters.TimeConverter))]
@@ -70,8 +65,6 @@ namespace InterworksCaseStudy.Models
         [FieldConverter(typeof(Converters.BoolConverter))]
         public bool Diverted;
         public string Distance;
-
-
     }
 }
 

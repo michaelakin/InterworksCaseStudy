@@ -1,12 +1,8 @@
 ﻿using Dapper;
 using Npgsql;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rhino.Etl.Core;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace InterworksCaseStudy.Helpers
 {

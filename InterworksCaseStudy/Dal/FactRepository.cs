@@ -68,8 +68,6 @@ VALUES
   @long_dep_delay,
   @arr_next_day
 )";
-        //private const string fact_select  = @";
-
         public static void Add(NpgsqlConnection conn, Row row,
             ConcurrentDictionary<string, Models.Dim_Airline> dictAirline,
             ConcurrentDictionary<string, Models.Dim_Airport> dictAirport,
@@ -97,9 +95,9 @@ VALUES
 
             // Find codes
             var airline = dictAirline.Where(w => w.Key == (string)row["AirlineCode"]).FirstOrDefault().Value; ;
-            var tail = dictTail.Where(w => w.Key == TailRepository.CleanTail((string)row["TailNum"])).FirstOrDefault().Value ;
+            var tail = dictTail.Where(w => w.Key == TailRepository.CleanTail((string)row["TailNum"])).FirstOrDefault().Value;
             var origin_airport = dictAirport.Where(w => w.Key == AirportRepository.Clean((string)row["OriginAirportName"])).FirstOrDefault().Value;
-            var dest_airport = dictAirport.Where(w => w.Key   == AirportRepository.Clean((string)row["DestAirportName"])).FirstOrDefault().Value;
+            var dest_airport = dictAirport.Where(w => w.Key == AirportRepository.Clean((string)row["DestAirportName"])).FirstOrDefault().Value;
 
             // Write the airline to the database.
             conn.Execute(fact_insert, new
@@ -109,7 +107,7 @@ VALUES
                 airline_id = airline.airline_id,
                 tail_id = tail.tail_id,
                 flight_num = row["FlightNum"],
-                origin_airport_id =  origin_airport.airport_id,
+                origin_airport_id = origin_airport.airport_id,
                 destination_airport_id = dest_airport.airport_id,
                 crs_dep_time = row["CrsDepTime"],
                 dep_time = row["DepTime"],
@@ -128,8 +126,8 @@ VALUES
                 distance = tempDistanceInt,
                 distance_unit = tempDistanceUnits,
                 distance_group = GetDistanceGroup(tempDistanceInt),
-                long_dep_delay =  ((int)row["DepDelay"] > 15),
-                arr_next_day = (DateTime.Compare((DateTime)row["ArrTime"],(DateTime)row["DepTime"]) < 0)
+                long_dep_delay = ((int)row["DepDelay"] > 15),
+                arr_next_day = (DateTime.Compare((DateTime)row["ArrTime"], (DateTime)row["DepTime"]) < 0)
             });
 
         }
@@ -140,19 +138,5 @@ VALUES
             decimal floor = ceiling - 100;
             return $"{floor}-{ceiling}";
         }
-        //public static Models.Fact_Flights Find(NpgsqlConnection conn)
-        //{
-        //var cachedAirline = dictAirline.FirstOrDefault(w => w.Key == airline_code);
-        //if (cachedAirline.Value != null) return cachedAirline.Value;
-
-        //var result = conn.Query<Models.Dim_Airline>(airline_select,
-        //    new { airline_code = airline_code });
-
-        //// add to hash table
-        //if (result.Any() && !dictAirline.ContainsKey(airline_code))
-        //    dictAirline.TryAdd(airline_code, result.FirstOrDefault());
-
-        //return result.FirstOrDefault();
-        //}
     }
 }
