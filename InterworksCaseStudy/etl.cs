@@ -16,6 +16,7 @@ namespace InterworksCaseStudy
         private ConcurrentDictionary<string, Models.Dim_City> cityDict = new ConcurrentDictionary<string, Models.Dim_City>();
         private ConcurrentDictionary<string, Models.Dim_State> stateDict = new ConcurrentDictionary<string, Models.Dim_State>();
         private ConcurrentDictionary<string, Models.Dim_Airport> airportDict = new ConcurrentDictionary<string, Models.Dim_Airport>();
+        private ConcurrentDictionary<string, Models.Dim_Airline> airlineDict = new ConcurrentDictionary<string, Models.Dim_Airline>();
 
         public Etl(ConnectionStringSettings connectionString, string flatFileLocaiton)
         {
@@ -26,10 +27,11 @@ namespace InterworksCaseStudy
         protected override void Initialize()
         {
             Register(new FileGetData(_flatFileLocation));
-            //Register(new WriteDataToConsole());
+            Register(new WriteDataToConsole());
             Register(new WriteState(stateDict));
-            Register(new WriteCity(cityDict,stateDict));
+            Register(new WriteCity(cityDict, stateDict));
             Register(new WriteAirport(airportDict, cityDict, stateDict));
+            Register(new WriteAirline(airlineDict));
         }
     }
 }
