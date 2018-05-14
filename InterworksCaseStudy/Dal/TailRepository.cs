@@ -16,7 +16,7 @@ namespace InterworksCaseStudy.Helpers
             if (TailRepository.Find(conn, tail_no, dictTail) == null)
             {
                 // clean the tail
-                var cleanTailNo = tail_no.Replace("@", "").Replace("-", "");
+                var cleanTailNo = Clean(tail_no);
 
                 // Write the airline to the database.
                 conn.Execute(tail_insert, new
@@ -25,7 +25,7 @@ namespace InterworksCaseStudy.Helpers
                 });
 
                 // find to Add to hash table.
-                TailRepository.Find(conn, cleanTailNo, dictTail);
+                Find(conn, cleanTailNo, dictTail);
             }
         }
 
@@ -42,6 +42,11 @@ namespace InterworksCaseStudy.Helpers
                 dictTail.TryAdd(tail_no, result.FirstOrDefault());
 
             return result.FirstOrDefault();
+        }
+
+        public static string Clean(string input)
+        {
+            return input.Replace("@", "").Replace("-", "");
         }
     }
 }
