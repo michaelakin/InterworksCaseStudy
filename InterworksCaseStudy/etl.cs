@@ -28,7 +28,7 @@ namespace InterworksCaseStudy
         protected override void Initialize()
         {
             Register(new FileGetData(_flatFileLocation));
-            Register(new WriteDataToConsole());
+            //Register(new WriteDataToConsole());
             Register(new WriteState(stateDict));
             Register(new WriteCity(cityDict, stateDict));
             Register(new WriteAirport(airportDict, cityDict, stateDict));

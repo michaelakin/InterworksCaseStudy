@@ -15,14 +15,17 @@ namespace InterworksCaseStudy.Helpers
         {
             if (TailRepository.Find(conn, tail_no, dictTail) == null)
             {
+                // clean the tail
+                var cleanTailNo = tail_no.Replace("@", "").Replace("-", "");
+
                 // Write the airline to the database.
                 conn.Execute(tail_insert, new
                 {
-                    tail_no = tail_no
+                    tail_no = cleanTailNo
                 });
 
                 // find to Add to hash table.
-                TailRepository.Find(conn, tail_no, dictTail);
+                TailRepository.Find(conn, cleanTailNo, dictTail);
             }
         }
 
