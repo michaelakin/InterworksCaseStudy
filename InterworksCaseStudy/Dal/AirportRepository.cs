@@ -15,7 +15,10 @@ namespace InterworksCaseStudy.Helpers
         private const string airport_insert = @"INSERT INTO candidate2485.dim_airport (airport_name, city_id) VALUES (@airport_name, @city_id);";
         private const string airport_select = @"SELECT * FROM candidate2485.dim_airport WHERE airport_name = @airport_name";
 
-        public static void Add(NpgsqlConnection conn, string airportName, string city, string state,  ConcurrentDictionary<string,Models.Dim_Airport> dictAirports, ConcurrentDictionary<string, Models.Dim_City> dictCity, ConcurrentDictionary<string, Models.Dim_State> dictState)
+        public static void Add(NpgsqlConnection conn, string airportName, string city, string state,  
+            ConcurrentDictionary<string,Models.Dim_Airport> dictAirports, 
+            ConcurrentDictionary<string, Models.Dim_City> dictCity, 
+            ConcurrentDictionary<string, Models.Dim_State> dictState)
         {
             // Clean airport name
             string cleanAirport = Clean(airportName);

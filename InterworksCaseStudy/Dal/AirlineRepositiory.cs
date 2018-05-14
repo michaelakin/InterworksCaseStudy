@@ -14,12 +14,12 @@ namespace InterworksCaseStudy.Helpers
         public static void Add(NpgsqlConnection conn, string airline_code, string name, ConcurrentDictionary<string, Models.Dim_Airline> dictAirline)
         {
             // Clean airline name
-            var cleanName = Clean(name);
+            var cleanName = CleanName(name);
 
             if (cleanName != string.Empty && !dictAirline.ContainsKey(cleanName))
             {
 
-                if (AirlineRepository.Find(conn, airline_code, cleanName, dictAirline) == null)
+                if (AirlineRepository.Find(conn, airline_code, dictAirline) == null)
                 {
                     // Write the airline to the database.
                     conn.Execute(airline_insert, new
@@ -29,7 +29,7 @@ namespace InterworksCaseStudy.Helpers
                     });
 
                     // find to Add to hash table.
-                    AirlineRepository.Find(conn, airline_code, cleanName, dictAirline);
+                    AirlineRepository.Find(conn, airline_code, dictAirline);
                 }
             }
             else
@@ -39,7 +39,7 @@ namespace InterworksCaseStudy.Helpers
 
         }
 
-        public static Models.Dim_Airline Find(NpgsqlConnection conn, string airline_code, string name, ConcurrentDictionary<string, Models.Dim_Airline> dictAirline)
+        public static Models.Dim_Airline Find(NpgsqlConnection conn, string airline_code, ConcurrentDictionary<string, Models.Dim_Airline> dictAirline)
         {
             var cachedAirline = dictAirline.FirstOrDefault(w => w.Key == airline_code);
             if (cachedAirline.Value != null) return cachedAirline.Value;
@@ -54,7 +54,7 @@ namespace InterworksCaseStudy.Helpers
             return result.FirstOrDefault();
         }
 
-        public static string Clean(string input)
+        public static string CleanName(string input)
         {
             var temp = input.Split(':');
             if (temp.Count() > 1)

@@ -70,51 +70,89 @@ VALUES
 )";
         //private const string fact_select  = @";
 
-        public static void Add(NpgsqlConnection conn, Row row, 
+        public static void Add(NpgsqlConnection conn, Row row,
             ConcurrentDictionary<string, Models.Dim_Airline> dictAirline,
             ConcurrentDictionary<string, Models.Dim_Airport> dictAirport,
             ConcurrentDictionary<string, Models.Dim_City> dictCity,
             ConcurrentDictionary<string, Models.Dim_State> dictState,
-            ConcurrentDictionary<string, Models.Dim_Tail> dictAdictTail)
+            ConcurrentDictionary<string, Models.Dim_Tail> dictTail)
         {
-                    //if (FactRepository.Find(conn, airline_code, cleanName, dictAirline) == null)
-                    //{
-                    //    // Write the airline to the database.
-                    //    conn.Execute(fact_insert, new
-                    //    {
-                    //        transaction_id = row["TransactionId"],
-                    //        flight_date = row["TransactionId"],
-                    //        //airline_id = 
-                    //        //tail_id =
-                    //        flight_num = row["FlightNum"],
-                    //        //origin_airport_id = 
-                    //        //destination_airport_id = 
-                    //        crs_dep_time = 
+            // Convert Distance.
+            string tempDistance = (string)row["Distance"];
+            int tempDistanceInt = 0;
+            string tempDistanceUnits = string.Empty;
+            string tempDistanceGrup = string.Empty;
+            var tempDistArray = tempDistance.Split(' ');
+            string unit = string.Empty;
+            if (tempDistArray.Length == 2)
+            {
+                tempDistanceInt = Convert.ToInt32(tempDistance[0]);
+                tempDistanceUnits = tempDistance[1].ToString().Trim();
+                tempDistanceGrup = GetDistanceGroup(tempDistanceInt);
+            }
+            else
+            {
+                throw new Exception("Invalid disance");
+            }
 
+            // Find codes
+            var airline = dictAirline.Where(w => w.Key == (string)row["AirlineCode"]).FirstOrDefault().Value; ;
+            var tail = dictTail.Where(w => w.Key == TailRepository.CleanTail((string)row["TailNum"])).FirstOrDefault().Value ;
+            var origin_airport = dictAirport.Where(w => w.Key == AirportRepository.Clean((string)row["OriginAirportName"])).FirstOrDefault().Value;
+            var dest_airport = dictAirport.Where(w => w.Key   == AirportRepository.Clean((string)row["DestAirportName"])).FirstOrDefault().Value;
 
-                    //        airline_code = airline_code,
-                    //        name = cleanName
-                    //    });
+            // Write the airline to the database.
+            conn.Execute(fact_insert, new
+            {
+                transaction_id = row["TransactionId"],
+                flight_date = row["TransactionId"],
+                airline_id = airline.airline_id,
+                tail_id = tail.tail_id,
+                flight_num = row["FlightNum"],
+                origin_airport_id =  origin_airport.airport_id,
+                destination_airport_id = dest_airport.airport_id,
+                crs_dep_time = row["CrsDepTime"],
+                dep_time = row["DepTime"],
+                dep_delay = row["DepDelay"],
+                taxi_out = row["TaxiOut"],
+                wheels_off = row["WheelsOff"],
+                wheels_on = row["WheelsOn"],
+                taxi_in = row["TaxiIn"],
+                crs_arr_time = row["CrsArrTime"],
+                arr_time = row["ArrTime"],
+                arr_delay = row["ArrDelay"],
+                crs_elapsed_time = row["CrsElapsedTime"],
+                actual_elapsed_time = row["ActualElapsedTime"],
+                cancelled = row["Cancelled"],
+                diverted = row["Diverted"],
+                distance = tempDistance,
+                distance_unit = tempDistanceUnits,
+                distance_group = GetDistanceGroup(tempDistanceInt),
+                long_dep_delay =  ((int)row["DepDelay"] > 15),
+                arr_next_day = (DateTime.Compare((DateTime)row["ArrTime"],(DateTime)row["DepTime"]) < 0)
+            });
 
-                    //    // find to Add to hash table.
-                    //    FactRepository.Find(conn, airline_code, cleanName, dictAirline);
-                    //}
-            //}
         }
 
+        public static string GetDistanceGroup(int distance)
+        {
+            decimal ceiling = Math.Ceiling(distance / 100M) * 100;
+            decimal floor = ceiling - 100;
+            return $"{floor}-{ceiling}";
+        }
         //public static Models.Fact_Flights Find(NpgsqlConnection conn)
         //{
-            //var cachedAirline = dictAirline.FirstOrDefault(w => w.Key == airline_code);
-            //if (cachedAirline.Value != null) return cachedAirline.Value;
+        //var cachedAirline = dictAirline.FirstOrDefault(w => w.Key == airline_code);
+        //if (cachedAirline.Value != null) return cachedAirline.Value;
 
-            //var result = conn.Query<Models.Dim_Airline>(airline_select,
-            //    new { airline_code = airline_code });
+        //var result = conn.Query<Models.Dim_Airline>(airline_select,
+        //    new { airline_code = airline_code });
 
-            //// add to hash table
-            //if (result.Any() && !dictAirline.ContainsKey(airline_code))
-            //    dictAirline.TryAdd(airline_code, result.FirstOrDefault());
+        //// add to hash table
+        //if (result.Any() && !dictAirline.ContainsKey(airline_code))
+        //    dictAirline.TryAdd(airline_code, result.FirstOrDefault());
 
-            //return result.FirstOrDefault();
+        //return result.FirstOrDefault();
         //}
     }
 }

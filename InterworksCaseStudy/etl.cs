@@ -13,11 +13,11 @@ namespace InterworksCaseStudy
     {
         ConnectionStringSettings connection_string;
         string _flatFileLocation;
-        private ConcurrentDictionary<string, Models.Dim_City> cityDict = new ConcurrentDictionary<string, Models.Dim_City>();
-        private ConcurrentDictionary<string, Models.Dim_State> stateDict = new ConcurrentDictionary<string, Models.Dim_State>();
-        private ConcurrentDictionary<string, Models.Dim_Airport> airportDict = new ConcurrentDictionary<string, Models.Dim_Airport>();
-        private ConcurrentDictionary<string, Models.Dim_Airline> airlineDict = new ConcurrentDictionary<string, Models.Dim_Airline>();
-        private ConcurrentDictionary<string, Models.Dim_Tail> tailDict = new ConcurrentDictionary<string, Models.Dim_Tail>();
+        private ConcurrentDictionary<string, Models.Dim_City> dictCity = new ConcurrentDictionary<string, Models.Dim_City>();
+        private ConcurrentDictionary<string, Models.Dim_State> dictState = new ConcurrentDictionary<string, Models.Dim_State>();
+        private ConcurrentDictionary<string, Models.Dim_Airport> dictAirport = new ConcurrentDictionary<string, Models.Dim_Airport>();
+        private ConcurrentDictionary<string, Models.Dim_Airline> dictAirline = new ConcurrentDictionary<string, Models.Dim_Airline>();
+        private ConcurrentDictionary<string, Models.Dim_Tail> dictTail = new ConcurrentDictionary<string, Models.Dim_Tail>();
 
         public Etl(ConnectionStringSettings connectionString, string flatFileLocaiton)
         {
@@ -29,11 +29,12 @@ namespace InterworksCaseStudy
         {
             Register(new FileGetData(_flatFileLocation));
             //Register(new WriteDataToConsole());
-            Register(new WriteState(stateDict));
-            Register(new WriteCity(cityDict, stateDict));
-            Register(new WriteAirport(airportDict, cityDict, stateDict));
-            Register(new WriteAirline(airlineDict));
-            Register(new WriteTail(tailDict));
+            Register(new WriteState(dictState));
+            Register(new WriteCity(dictCity, dictState));
+            Register(new WriteAirport(dictAirport, dictCity, dictState));
+            Register(new WriteAirline(dictAirline));
+            Register(new WriteTail(dictTail));
+            Register(new WriteFact(dictAirline, dictAirport, dictCity, dictState, dictTail));
         }
     }
 }

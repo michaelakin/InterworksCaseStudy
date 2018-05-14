@@ -50,14 +50,11 @@ namespace InterworksCaseStudy.Models
         [FieldConverter(ConverterKind.Int32)]
         [FieldNullValue(typeof(Int32), "0")]
         public int TaxiIn;
-
         [FieldConverter(typeof(Converters.TimeConverter))]
         public DateTime CrsArrTime;
-
         [FieldConverter(typeof(Converters.TimeConverter))]
         [FieldNullValue(typeof(DateTime), "0001-01-01")]
         public DateTime ArrTime;
-       
         [FieldConverter(ConverterKind.Int32)]
         [FieldNullValue(typeof(Int32),"0")]
         public int ArrDelay;

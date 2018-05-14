@@ -114,6 +114,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="WriteFact.cs" />
     <Compile Include="WriteTail.cs" />
     <Compile Include="WriteAirline.cs" />
     <Compile Include="WriteDataToConsole.cs" />
