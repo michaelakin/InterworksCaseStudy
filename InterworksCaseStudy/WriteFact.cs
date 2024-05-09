@@ -39,16 +39,14 @@ namespace InterworksCaseStudy
             using (var conn = new NpgsqlConnection(conString))
             {
                 conn.Open();
-                Parallel.ForEach(rows, (row) =>
+                {
+                    foreach (var row in rows)
                     {
                         FactRepository.Add(conn, row, _dictAirline, _dictAirport, _dictCity, _dictState, _dictTail);
-                    });
+                        yield return row;
 
-                foreach (var row in rows)
-                {
-                    yield return row;
+                    }
                 }
-
             }
         }
     }
